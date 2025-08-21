@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="WSDA_Music.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4026"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Album" custom_title="0" dock_id="2" table="4,5:mainAlbum"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000002fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000000000000000fb000000160064006f0063006b00420072006f00770073006500320100000000ffffffff0000011800ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 2">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices exist between $1.98 and $5.00?
+*/
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	Total BETWEEN 1.98 AND 5.00
+ORDER BY
+	InvoiceDate;
+</sql><sql name="SQL 3">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices do we have that are exactly $1.98 or $3.96?
+*/
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	Total IN (1.98, 3.96)
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 4">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices were billed to Brussels?
+*/
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	BillingCity = 'Brussels'
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 5">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices were billed in Brussels, Orlando or Paris?
+*/
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	BillingCity IN ('Brussels','Orlando', 'Paris')
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 6">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices were billed in cities that start with 'B'?
+*/
+
+-- % = Wildcard character
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	BillingCity LIKE 'B%'
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 7">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices were billed in cities that hafe a 'B' anywhere in it's name?
+*/
+
+-- % = Wildcard character
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	BillingCity LIKE '%B%'
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 8">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices were billed on 2010-05-22 00:00:00?
+*/
+
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	DATE(InvoiceDate) = '2010-05-22'
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 9">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: How many invoices were billed after 2010-05-22 and have a total of less than $3.00?
+*/
+
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	DATE(InvoiceDate) &gt; '2010-05-22' AND total &lt; 3.00
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 10">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: Get all invoices whose billing city starts with 'P' or 'D'.
+*/
+
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	BillingCity LIKE 'P%' OR BillingCity LIKE 'D%'
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 11">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: Get all invoices that are greater than 1.98 from any cities whose name starts with P or starts with D.
+
+PEMDAS - Parenthesese, Exponents, Multiplication/Division, Addition/Subtraction
+BEMDAS - Brackets, Exponents, Multiplication/Division, Addition/Subtraction
+*/
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total
+FROM 
+	Invoice
+WHERE
+	Total &gt; 1.98 AND (BillingCity LIKE 'P%' OR BillingCity LIKE 'D%')
+ORDER BY
+	InvoiceDate;</sql><sql name="SQL 12*">/*
+Created By: Brian Fottrell
+Created Date: 07/29/2025
+Description: Demonstrate IF THEN logic with the CASE statement.
+*/
+
+/*
+WSDA Music Sales Goal:
+They want as many customers as possible to spend between $7.00 and $15.00
+
+Sales Categories:
+Baseline Purchase - Between $0.99 and $1.99
+Low Purchase -      Between $2.00 and $6.99
+Target Purchase -   Between $7.00 and $15.00
+Top Performer - 	Above $15.00
+*/
+
+SELECT
+	InvoiceDate,
+	BillingAddress,
+	BillingCity,
+	Total,
+	CASE
+		WHEN total &lt; 2.00 THEN 'Baseline Purchase'
+		WHEN total BETWEEN 2.00 AND 6.99 THEN 'Low Purchase'
+		WHEN total BETWEEN 7.00 AND 15.00 THEN 'Target Purchase'
+		ELSE 'Top Performer'
+	END AS PurchaseType
+FROM 
+	Invoice
+WHERE
+	PurchaseType = 'Top Performer'
+ORDER BY
+	BillingCity;</sql><current_tab id="10"/></tab_sql></sqlb_project>
